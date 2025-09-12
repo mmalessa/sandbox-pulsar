@@ -1,0 +1,45 @@
+services:
+  php:
+    build:
+        context: .
+        target: phpdev
+        args:
+            DEVELOPER_UID: 1000
+    ports: 
+      - 8080:8080
+    volumes:
+        - ./php:/app:consistent
+        # - ./.docker/php/php-override.ini:/usr/local/etc/php/conf.d/php-override.ini
+        - php_user_home:/home/developer
+    tty: true
+
+  pulsar:
+    image: apachepulsar/pulsar:4.1.0
+    # ports:
+      # - 6650:6650
+      # - 8080:8080
+    volumes:
+      - pulsar_data:/pulsar/data
+      - pulsar_conf:/pulsar/conf
+    command: bin/pulsar standalone
+
+  pulsar-manager:
+    image: apachepulsar/pulsar-manager:v0.4.0
+    ports:
+      - 9527:9527
+      - 7750:7750
+    environment:
+      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./k6/script.js:/scripts/script.js:ro
+    # command: run /scripts/script.js
+    entrypoint: tail -f /dev/null
+    tty: true
+
+volumes:
+  pulsar_data:
+  pulsar_conf:
+  php_user_home:
