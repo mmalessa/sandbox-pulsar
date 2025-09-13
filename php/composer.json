@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "baldinof/roadrunner-bundle": "^3.2",
+        "ikilobyte/pulsar-client-php": "^1.4",
         "spiral/roadrunner": "^2025.1",
         "spiral/roadrunner-cli": "^2.7",
         "symfony/console": "7.3.*",

@@ -22,6 +22,21 @@ down: ## Down all
 shell: ## Enter PHP application dev container
 	@$(DC) exec -it php bash
 
+.PHONY: init
+init: ## Init all
+	./init_manager_credentials.sh && echo
+	$(DC) exec -it pulsar sh -c "bin/pulsar-admin namespaces set-retention public/default --time -1 --size -1"
+	$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
+# 	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics set-retention persistent://public/default/my-topic --time -1 --size -1"
+
+.PHONY: serve
+serve: ## Run rr in PHP
+	@$(DC) exec -it php sh -c "./bin/rr serve -c ./.rr.dev.yaml"
+
 .PHONY: test-stress
 test-stress: ## Run API stress test
 	@$(DC) exec k6 sh -c 'k6 run /scripts/script.js'
+
+.PHONY: pulsar-list
+pulsar-list:
+	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics peek-messages --count 10 --subscription my-subscription persistent://public/default/poc"
