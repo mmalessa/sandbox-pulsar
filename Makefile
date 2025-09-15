@@ -24,9 +24,11 @@ shell: ## Enter PHP application dev container
 
 .PHONY: init
 init: ## Init all
+	$(DC) exec php sh -c "composer install"
+	$(DC) exec php sh -c "./vendor/bin/rr get-binary -l /app/bin"
 	./init_manager_credentials.sh && echo
-	$(DC) exec -it pulsar sh -c "bin/pulsar-admin namespaces set-retention public/default --time -1 --size -1"
-	$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
+	$(DC) exec pulsar sh -c "bin/pulsar-admin namespaces set-retention public/default --time -1 --size -1"
+	$(DC) exec pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
 # 	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics set-retention persistent://public/default/my-topic --time -1 --size -1"
 
 .PHONY: serve
@@ -39,4 +41,4 @@ test-stress: ## Run API stress test
 
 .PHONY: pulsar-list
 pulsar-list:
-	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics peek-messages --count 10 --subscription my-subscription persistent://public/default/poc"
+	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics peek-messages --subscription my-subscription persistent://public/default/poc"

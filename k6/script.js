@@ -6,15 +6,21 @@ export let errorRate = new Rate('errors');
 
 export let options = {
     vus: 10,        // liczba wirtualnych użytkowników
-    duration: '30s', // czas trwania testu
-    rps: 50         // requestów na sekundę (opcjonalnie)
+    duration: '5s', // czas trwania testu
+    // rps: 50         // requestów na sekundę (opcjonalnie)
 };
 
+let globalCounter = 1;
+
 export default function () {
+
+    const seqId = `${__VU}-${__ITER}-${globalCounter++}`;
+    const timestamp = Date.now();
+
     const url = 'http://php:8080/api-test';
     const payload = JSON.stringify({
-        key1: "value1",
-        key2: "value2"
+        seqId: seqId,
+        timestamp: timestamp
     });
 
     const params = {

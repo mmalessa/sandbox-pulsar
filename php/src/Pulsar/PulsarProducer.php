@@ -23,9 +23,8 @@ class PulsarProducer
 
     public function publish(PulsarMessage $message)
     {
-        $payload = 'my payload';
         $this->producer->send(
-            payload: $payload,
+            payload: $message->payload,
             options: [
                 MessageOptions::KEY => rand(0,100),
                 MessageOptions::PROPERTIES => ['ms' => microtime(true), 'prop_key' => rand(0,100)]
