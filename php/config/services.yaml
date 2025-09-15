@@ -1,4 +1,7 @@
 parameters:
+    pulsar_uri: '%env(PULSAR_URI)%'
+    pulsar_topic: '%env(PULSAR_TOPIC)%'
+    pulsar_subscription_name: '%env(PULSAR_SUBSCRIPTION_NAME)%'
 
 services:
     _defaults:
@@ -7,8 +10,14 @@ services:
 
     App\Pulsar\PulsarProducer:
         arguments:
-            $uri: 'pulsar://pulsar:6650'
-            $topic: 'persistent://public/default/poc'
+            $uri: '%pulsar_uri%'
+            $topic: '%pulsar_topic%'
+
+    App\Pulsar\PulsarConsumer:
+        arguments:
+            $uri: '%pulsar_uri%'
+            $topic: '%pulsar_topic%'
+            $subscriptionName: '%pulsar_subscription_name%'
 
     App\Controller\ApiTestController:
         autoconfigure: true
@@ -22,4 +31,5 @@ services:
         autowire: false
         bind:
             $pulsarProducer: '@App\Pulsar\PulsarProducer'
+            $pulsarConsumer: '@App\Pulsar\PulsarConsumer'
 

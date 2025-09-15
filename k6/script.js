@@ -5,21 +5,23 @@ import { Rate } from 'k6/metrics';
 export let errorRate = new Rate('errors');
 
 export let options = {
-    vus: 10,        // liczba wirtualnych użytkowników
+    vus: 1,        // liczba wirtualnych użytkowników
     duration: '5s', // czas trwania testu
     // rps: 50         // requestów na sekundę (opcjonalnie)
 };
 
-let globalCounter = 1;
+let globalCounter = 0;
 
 export default function () {
 
-    const seqId = `${__VU}-${__ITER}-${globalCounter++}`;
     const timestamp = Date.now();
+    globalCounter++;
 
     const url = 'http://php:8080/api-test';
     const payload = JSON.stringify({
-        seqId: seqId,
+        vu: __VU,
+        iter: __ITER,
+        counter: globalCounter,
         timestamp: timestamp
     });
 

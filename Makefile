@@ -35,10 +35,24 @@ init: ## Init all
 serve: ## Run rr in PHP
 	@$(DC) exec -it php sh -c "./bin/rr serve -c ./.rr.dev.yaml"
 
-.PHONY: test-stress
-test-stress: ## Run API stress test
+.PHONY: pulsar-feed
+pulsar-feed:
 	@$(DC) exec k6 sh -c 'k6 run /scripts/script.js'
+
+.PHONY: pulsar-consume
+pulsar-consume:
+	@$(DC) exec php sh -c './bin/console app:pulsar-consume'
+
 
 .PHONY: pulsar-list
 pulsar-list:
-	@$(DC) exec -it pulsar sh -c "bin/pulsar-admin topics peek-messages --subscription my-subscription persistent://public/default/poc"
+	@$(DC) exec pulsar sh -c "bin/pulsar-admin topics peek-messages --subscription my-subscription persistent://public/default/poc"
+
+.PHONY: pulsar-purge
+pulsar-purge:
+	$(DC) exec pulsar sh -c "bin/pulsar-admin topics delete persistent://public/default/poc" --force
+	$(DC) exec pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
+
+.PHONY: pulsar-reset
+pulsar-reset:
+	$(DC) exec pulsar sh -c "bin/pulsar-admin topics reset-cursor persistent://public/default/poc -s some-sub --messageId earliest"
