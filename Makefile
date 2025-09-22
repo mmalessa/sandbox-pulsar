@@ -37,7 +37,7 @@ serve: ## Run rr in PHP
 
 .PHONY: pulsar-feed
 pulsar-feed:
-	@$(DC) exec k6 sh -c 'k6 run /scripts/script.js'
+	@$(DC) exec k6 sh -c 'k6 run /scripts/feed_operations.js'
 
 .PHONY: pulsar-consume
 pulsar-consume:

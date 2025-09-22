@@ -38,7 +38,8 @@ services:
   k6:
     image: grafana/k6
     volumes:
-      - ./k6/script.js:/scripts/script.js:ro
+      # - ./k6/script.js:/scripts/script.js:ro
+      - ./k6/:/scripts/
     # command: run /scripts/script.js
     entrypoint: tail -f /dev/null
     tty: true

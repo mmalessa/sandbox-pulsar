@@ -18,5 +18,15 @@ class PulsarTestHandler implements PulsarHandlerInterface
                 $message->getPublishTime(),
                 $message->getRedeliveryCount()
             ) . "\n";
+
+        $payload = $message->getPayload();
+        $payloadArray = json_decode($payload, true);
+        $success = $payloadArray['success'];
+
+        if (!$success) {
+            throw new \Exception('Got message failed');
+        }
+
+
     }
 }
