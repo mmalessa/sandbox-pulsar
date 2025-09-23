@@ -21,13 +21,23 @@ class PulsarProducer
         $this->producer->connect();
     }
 
+    public function __destruct()
+    {
+        $this->producer->close();
+    }
+
     public function publish(PulsarMessage $message)
     {
+        printf(
+            "Publish: [%s] with key [%s]\n",
+            $message->payload,
+            $message->key,
+        );
         $this->producer->send(
             payload: $message->payload,
             options: [
-                MessageOptions::KEY => rand(0,100),
-                MessageOptions::PROPERTIES => ['ms' => microtime(true), 'prop_key' => rand(0,100)]
+                MessageOptions::KEY => $message->key,
+                MessageOptions::PROPERTIES => ['ms' => microtime(true)]
             ],
         );
     }

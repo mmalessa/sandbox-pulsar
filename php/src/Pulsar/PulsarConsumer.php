@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Pulsar;
 
-use Pulsar\Client;
 use Pulsar\Consumer;
 use Pulsar\ConsumerOptions;
 use Pulsar\SubscriptionType;
 
 class PulsarConsumer
 {
-        private Consumer $consumer;
+    private Consumer $consumer;
 
     public function __construct(
         private readonly string $uri,
@@ -22,13 +21,19 @@ class PulsarConsumer
         $options = new ConsumerOptions();
         $options->setConnectTimeout(3);
         $options->setTopic($this->topic);
-        $options->setSubscription($subscriptionName);
+        $options->setSubscription($this->subscriptionName);
         $options->setSubscriptionType(SubscriptionType::Key_Shared);
+
 
         $options->setNackRedeliveryDelay(10);
 
         $this->consumer = new Consumer($this->uri, $options);
         $this->consumer->connect();
+    }
+
+    public function __destruct()
+    {
+        $this->consumer->close();
     }
 
     public function Consume(PulsarHandlerInterface $handler):void

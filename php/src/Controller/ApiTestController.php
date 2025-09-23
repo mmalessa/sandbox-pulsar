@@ -23,9 +23,11 @@ class ApiTestController
         $timeStamp = microtime(true);
 
         $body = $request->getContent();
+        $headers = $request->headers->all();
 
         $message = new PulsarMessage(
             payload: $body,
+            key: $headers['X-Message-Key'] ?? rand(0, 100),
         );
 
         $this->pulsarProducer->publish($message);

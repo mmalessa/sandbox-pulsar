@@ -25,7 +25,7 @@ shell: ## Enter PHP application dev container
 .PHONY: init
 init: ## Init all
 	$(DC) exec php sh -c "composer install"
-	$(DC) exec php sh -c "./vendor/bin/rr get-binary -l /app/bin"
+	$(DC) exec php sh -c "[ -f /app/bin/rr ] || ./vendor/bin/rr get-binary -l /app/bin"
 	./init_manager_credentials.sh && echo
 	$(DC) exec pulsar sh -c "bin/pulsar-admin namespaces set-retention public/default --time -1 --size -1"
 	$(DC) exec pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
@@ -52,6 +52,7 @@ pulsar-list:
 pulsar-purge:
 	$(DC) exec pulsar sh -c "bin/pulsar-admin topics delete persistent://public/default/poc" --force
 	$(DC) exec pulsar sh -c "bin/pulsar-admin topics create persistent://public/default/poc"
+	$(MAKE) pulsar-reset
 
 .PHONY: pulsar-reset
 pulsar-reset:

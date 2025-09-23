@@ -11,18 +11,17 @@ class PulsarTestHandler implements PulsarHandlerInterface
     public function Handle(Message $message)
     {
 //        var_export($message->getProperties());
-        echo sprintf('Got message 【%s】messageID[%s] topic[%s] publishTime[%s] redeliveryCount[%d]',
+        echo sprintf('Got message 【%s】 properties[%s] messageID[%s] redeliveryCount[%d]',
                 $message->getPayload(),
+                json_encode($message->getProperties()),
                 $message->getMessageId(),
-                $message->getTopic(),
-                $message->getPublishTime(),
-                $message->getRedeliveryCount()
+                $message->getRedeliveryCount(),
             ) . "\n";
 
         $payload = $message->getPayload();
         $payloadArray = json_decode($payload, true);
-        $success = $payloadArray['success'];
 
+        $success = $payloadArray['success'] ?? true;
         if (!$success) {
             throw new \Exception('Got message failed');
         }
